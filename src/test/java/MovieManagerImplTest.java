@@ -8,6 +8,7 @@ import edu.umflix.persistence.ClipDao;
 import edu.umflix.persistence.ClipDataDao;
 import edu.umflix.persistence.RoleDao;
 import model.MovieManager;
+import org.junit.Before;
 import org.junit.Test;
 import services.MovieManagerImpl;
 
@@ -20,44 +21,10 @@ import static org.mockito.Mockito.when;
 
 public class MovieManagerImplTest {
 
-    @Test
-    public void testValidUserToken() throws InvalidTokenException, IllegalArgumentException {
-        String userToken = "validToken";
-        MovieManager movieManager = getMockManager();
-        assertArrayEquals(((ArrayList<Clip>) movieManager.getMovie(userToken, (long) 0)).toArray(), new ArrayList<Clip>().toArray());
-    }
+    private MovieManagerImpl movieManager;
 
-    @Test(expected = InvalidTokenException.class)
-    public void testInvalidUserToken() throws InvalidTokenException, IllegalArgumentException {
-        String userToken = "invalidToken";
-        MovieManager movieManager = getMockManager();
-        movieManager.getMovie(userToken, (long) 0);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testExpiredUserToken() throws InvalidTokenException, IllegalArgumentException {
-        String userToken = "expiredToken";
-        MovieManager movieManager = getMockManager();
-        movieManager.getMovie(userToken, (long) 0);
-    }
-
-    @Test
-    public void testGetMovie() {
-    }
-
-    @Test
-    public void testGetClipData() {
-    }
-
-    @Test
-    public void testSendActivity() {
-    }
-
-    @Test
-    public void testGetAd() {
-    }
-
-    private MovieManager getMockManager() throws InvalidTokenException {
+    @Before
+    public void getMockManager() throws InvalidTokenException {
         ClipDataDao clipDataDao = mock(ClipDataDao.class);
         RoleDao roleDao = mock(RoleDao.class);
         ClipDao clipDao = mock(ClipDao.class);
@@ -85,6 +52,44 @@ public class MovieManagerImplTest {
         when(authenticationHandler.validateToken("expiredToken", validRoles)).thenReturn(false);
         when(authenticationHandler.validateToken("invalidToken", validRoles)).thenThrow(InvalidTokenException.class);
 
-        return new MovieManagerImpl(clipDataDao, clipDao, roleDao, authenticationHandler);
+        movieManager = new MovieManagerImpl();
+        movieManager.setClipDao(clipDao);
+        movieManager.setClipDataDao(clipDataDao);
+        movieManager.setAuthenticationHandler(authenticationHandler);
+        movieManager.setRoleDao(roleDao);
+    }
+
+    @Test
+    public void testValidUserToken() throws InvalidTokenException, IllegalArgumentException {
+        String userToken = "validToken";
+        assertArrayEquals(((ArrayList<Clip>) movieManager.getMovie(userToken, (long) 0)).toArray(), new ArrayList<Clip>().toArray());
+    }
+
+    @Test(expected = InvalidTokenException.class)
+    public void testInvalidUserToken() throws InvalidTokenException, IllegalArgumentException {
+        String userToken = "invalidToken";
+        movieManager.getMovie(userToken, (long) 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExpiredUserToken() throws InvalidTokenException, IllegalArgumentException {
+        String userToken = "expiredToken";
+        movieManager.getMovie(userToken, (long) 0);
+    }
+
+    @Test
+    public void testGetMovie() {
+    }
+
+    @Test
+    public void testGetClipData() {
+    }
+
+    @Test
+    public void testSendActivity() {
+    }
+
+    @Test
+    public void testGetAd() {
     }
 }

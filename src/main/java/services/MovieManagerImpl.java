@@ -9,23 +9,25 @@ import edu.umflix.persistence.ClipDataDao;
 import edu.umflix.persistence.RoleDao;
 import model.MovieManager;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
 public class MovieManagerImpl implements MovieManager {
-    private ClipDataDao clipDataDao;
-    private ClipDao clipDao;
-    private RoleDao roleDao;
-    private AuthenticationHandler authenticationHandler;
 
-    public MovieManagerImpl(@NotNull ClipDataDao clipDataDao,@NotNull ClipDao clipDao, @NotNull RoleDao roleDao, @NotNull AuthenticationHandler authenticationHandler){
-        this.clipDataDao = clipDataDao;
-        this.clipDao = clipDao;
-        this.roleDao = roleDao;
-        this.authenticationHandler = authenticationHandler;
-    }
+    @EJB(beanName = "ClipDataDaoImpl")
+    ClipDataDao clipDataDao;
+
+    @EJB(beanName = "ClipDaoImpl")
+    ClipDao clipDao;
+
+    @EJB(beanName = "RoleDaoImpl")
+    RoleDao roleDao;
+
+    @EJB(beanName = "AuthenticationHandlerImpl")
+    AuthenticationHandler authenticationHandler;
 
     public List<Clip> getMovie(@NotNull String userToken, @NotNull Long movieId) throws InvalidTokenException{
         if(validateUser(userToken))
@@ -57,5 +59,21 @@ public class MovieManagerImpl implements MovieManager {
         roles.add(viewer);
         roles.add(reviewer);
         return authenticationHandler.validateToken(userToken, roles);
+    }
+
+    public void setClipDataDao(ClipDataDao clipDataDao) {
+        this.clipDataDao = clipDataDao;
+    }
+
+    public void setClipDao(ClipDao clipDao) {
+        this.clipDao = clipDao;
+    }
+
+    public void setRoleDao(RoleDao roleDao) {
+        this.roleDao = roleDao;
+    }
+
+    public void setAuthenticationHandler(AuthenticationHandler authenticationHandler) {
+        this.authenticationHandler = authenticationHandler;
     }
 }
