@@ -3,6 +3,7 @@ package services;
 import com.sun.istack.internal.NotNull;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
+import edu.umflix.clipstorage.ClipStorage;
 import edu.umflix.exceptions.ClipNotFoundException;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
@@ -34,6 +35,8 @@ public class MovieManagerImpl implements MovieManager {
     AuthenticationHandler authenticationHandler;
     @EJB(beanName = "ActivityDao")
     ActivityDao activityDao;
+    @EJB(beanName = "ClipStorage")
+    ClipStorage clipStorage;
 
     /**
      * {@link MovieManager#getMovie(String, Long)}
@@ -61,7 +64,7 @@ public class MovieManagerImpl implements MovieManager {
         logger.info("received getClipData invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
             logger.info("user token validation returned true");
-            return null;
+            return clipStorage.getClipDataById(clipId);
         } else {
             logger.info("user token validation returned false");
             throw new IllegalArgumentException("User token has expired");
