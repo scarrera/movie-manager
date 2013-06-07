@@ -9,7 +9,6 @@ import model.exceptions.NoAdsException;
 import model.exceptions.ValuesInActivityException;
 import model.exceptions.UserNotAllowedException;
 
-import javax.ejb.Remote;
 import java.io.FileNotFoundException;
 import java.util.List;
 
