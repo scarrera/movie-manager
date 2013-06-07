@@ -9,15 +9,19 @@ import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
 import edu.umflix.model.*;
 import edu.umflix.persistence.ActivityDao;
+import edu.umflix.persistence.AdDao;
 import edu.umflix.persistence.MovieDao;
 import edu.umflix.persistence.RoleDao;
 import model.MovieManager;
+import model.exceptions.NoAdsException;
 import model.exceptions.ValuesInActivityException;
 import model.exceptions.UserNotAllowedException;
 import org.apache.log4j.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +41,8 @@ public class MovieManagerImpl implements MovieManager {
     ActivityDao activityDao;
     @EJB(beanName = "ClipStorage")
     ClipStorage clipStorage;
+    @EJB(beanName = "AdDao")
+    AdDao adDao;
 
     /**
      * {@link MovieManager#getMovie(String, Long)}
@@ -47,7 +53,7 @@ public class MovieManagerImpl implements MovieManager {
             logger.info("user token validation returned true");
             Movie movie = movieDao.getMovieById(movieId);
             logger.info("movie found; proceeding to validate if user is allowed to request movie");
-            if(userAllowedMovie(userToken, movie))
+            if (userAllowedMovie(userToken, movie))
                 return movie.getClips();
             else
                 throw new UserNotAllowedException("The given user is not allowed to request the selected movie");
@@ -60,11 +66,11 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getClipData(String, Long)}
      */
-    public ClipData getClipData(@NotNull String userToken, @NotNull Long clipId) throws InvalidTokenException, ClipNotFoundException {
+    public ClipData getClipData(@NotNull String userToken, @NotNull Long clipId) throws InvalidTokenException, FileNotFoundException {
         logger.info("received getClipData invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
             logger.info("user token validation returned true");
-            return clipStorage.getClipDataById(clipId);
+            return clipStorage.getClipDataByClipId(clipId);
         } else {
             logger.info("user token validation returned false");
             throw new IllegalArgumentException("User token has expired");
@@ -94,11 +100,20 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getAd(String, Long)}
      */
-    public ClipData getAd(@NotNull String userToken, @NotNull Long movieId) throws InvalidTokenException {
+    public ClipData getAd(@NotNull String userToken, @NotNull Long movieId) throws InvalidTokenException, NoAdsException {
         logger.info("received sendActivity invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
-            logger.info("user token validation returned true");
-            return null;
+            logger.info("user token validation returned true; proceeding to select random Ad");
+            Ad ad = getRandomAd();
+            logger.info("random Ad selected; proceeding to retrieve its associated ClipData");
+            try {
+                ClipData clipData = clipStorage.getClipDataByClipId(ad.getClip().getId());
+                logger.info("Clip data for the selected Ad found, proceeding to return this object");
+                return clipData;
+            } catch (FileNotFoundException e) {
+                logger.info("An Ad was selected, yet its clipData could not be found");
+                throw new NoAdsException();
+            }
         } else {
             logger.info("user token validation returned false");
             throw new IllegalArgumentException("User token has expired");
@@ -170,7 +185,24 @@ public class MovieManagerImpl implements MovieManager {
     }
 
     /**
+     * Method that retrieves all ads in system through adDao, and randomly returns one
+     *
+     * @return randomly selected Ad
+     * @throws NoAdsException when no ads are found in the system
+     * @see Ad
+     */
+    private Ad getRandomAd() throws NoAdsException {
+        List<Ad> ads = adDao.getAllAds();
+        if (ads == null || ads.size() == 0)
+            throw new NoAdsException();
+        int size = ads.size();
+        int randomNumberInRange = (int) Math.floor(Math.random() * size);
+        return ads.get(randomNumberInRange);
+    }
+
+    /**
      * Setter for movieDao attribute
+     *
      * @param movieDao to set
      * @see MovieDao
      */
@@ -180,6 +212,7 @@ public class MovieManagerImpl implements MovieManager {
 
     /**
      * Setter for roleDao attribute
+     *
      * @param roleDao to set
      * @see RoleDao
      */
@@ -189,6 +222,7 @@ public class MovieManagerImpl implements MovieManager {
 
     /**
      * Setter for authenticationHandler attribute
+     *
      * @param authenticationHandler to set
      * @see AuthenticationHandler
      */
@@ -198,10 +232,31 @@ public class MovieManagerImpl implements MovieManager {
 
     /**
      * Setter for activityDao attribute
+     *
      * @param activityDao to set
      * @see ActivityDao
      */
     public void setActivityDao(ActivityDao activityDao) {
         this.activityDao = activityDao;
+    }
+
+    /**
+     * Setter for clipStorage attribute
+     *
+     * @param clipStorage to set
+     * @see ClipStorage
+     */
+    public void setClipStorage(ClipStorage clipStorage) {
+        this.clipStorage = clipStorage;
+    }
+
+    /**
+     * Setter for adDao attribute
+     *
+     * @param adDao to set
+     * @see AdDao
+     */
+    public void setAdDao(AdDao adDao) {
+        this.adDao = adDao;
     }
 }

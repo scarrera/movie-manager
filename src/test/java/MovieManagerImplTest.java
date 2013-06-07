@@ -1,15 +1,19 @@
 
+import java.io.FileNotFoundException;
 import java.lang.IllegalArgumentException;
 
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
+import edu.umflix.clipstorage.ClipStorage;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
 import edu.umflix.model.*;
 import edu.umflix.persistence.ActivityDao;
+import edu.umflix.persistence.AdDao;
 import edu.umflix.persistence.MovieDao;
 import edu.umflix.persistence.RoleDao;
 
+import model.exceptions.NoAdsException;
 import model.exceptions.UserNotAllowedException;
 import model.exceptions.ValuesInActivityException;
 import org.junit.Before;
@@ -17,7 +21,6 @@ import org.junit.Test;
 import services.MovieManagerImpl;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -29,13 +32,17 @@ public class MovieManagerImplTest {
     private ActivityDao activityDao;
     private MovieDao movieDao;
     private AuthenticationHandler authenticationHandler;
+    private ClipStorage clipStorage;
+    private AdDao adDao;
 
     @Before
-    public void getMockManager() throws InvalidTokenException, RoleNotFoundException, MovieNotFoundException {
+    public void getMockManager() throws InvalidTokenException, RoleNotFoundException, MovieNotFoundException, FileNotFoundException {
         roleDao = mock(RoleDao.class);
         activityDao = mock(ActivityDao.class);
         movieDao = mock(MovieDao.class);
         authenticationHandler = mock(AuthenticationHandler.class);
+        clipStorage = mock(ClipStorage.class);
+        adDao = mock(AdDao.class);
 
         //prepare mock roleDao
         Role adminRole = mock(Role.class);
@@ -92,11 +99,17 @@ public class MovieManagerImplTest {
         when(authenticationHandler.getUserOfToken("validTokenUser")).thenReturn(user);
         when(authenticationHandler.getUserOfToken("validTokenAdmin")).thenReturn(admin);
 
+        //prepare mock clipStorage
+        when(clipStorage.getClipDataByClipId((long) 1)).thenReturn(mock(ClipData.class));
+        when(clipStorage.getClipDataByClipId((long) 2)).thenThrow(FileNotFoundException.class);
+
         movieManager = new MovieManagerImpl();
         movieManager.setActivityDao(activityDao);
         movieManager.setAuthenticationHandler(authenticationHandler);
         movieManager.setRoleDao(roleDao);
         movieManager.setMovieDao(movieDao);
+        movieManager.setClipStorage(clipStorage);
+        movieManager.setAdDao(adDao);
     }
 
     //getMovie tests
@@ -181,7 +194,24 @@ public class MovieManagerImplTest {
 
     //getClipData tests
     @Test
-    public void testGetClipData() {
+    public void testSuccessfulGetClipData() throws FileNotFoundException, InvalidTokenException {
+        String userToken = "validTokenUser";
+        long clipId = (long) 1;
+        movieManager.getClipData(userToken, clipId);
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void testUnsuccessfulGetClipData() throws FileNotFoundException, InvalidTokenException {
+        String userToken = "validTokenUser";
+        long clipId = (long) 2;
+        movieManager.getClipData(userToken, clipId);
+    }
+
+    @Test(expected = InvalidTokenException.class)
+    public void testUnsuccessfulGetClipDataBadToken() throws FileNotFoundException, InvalidTokenException {
+        String userToken = "invalidToken";
+        long clipId = (long) 1;
+        movieManager.getClipData(userToken, clipId);
     }
 
     //sendActivity tests
@@ -319,7 +349,54 @@ public class MovieManagerImplTest {
     }
 
     //getAd tests
+    @Test(expected = NoAdsException.class)
+    public void testUnsuccessfulGetAdZeroSizedList() throws NoAdsException, InvalidTokenException {
+        String userToken = "validTokenUser";
+        long movieId = 1;
+        when(adDao.getAllAds()).thenReturn(new ArrayList<Ad>());
+        movieManager.getAd(userToken, movieId);
+    }
+
+    @Test(expected = NoAdsException.class)
+    public void testUnsuccessfulGetAdNullList() throws NoAdsException, InvalidTokenException {
+        String userToken = "validTokenUser";
+        long movieId = 1;
+        when(adDao.getAllAds()).thenReturn(null);
+        movieManager.getAd(userToken, movieId);
+    }
+
+    @Test(expected = InvalidTokenException.class)
+    public void testUnsuccessfulGetAdBadToken() throws NoAdsException, InvalidTokenException {
+        String userToken = "invalidToken";
+        long movieId = 1;
+        movieManager.getAd(userToken, movieId);
+    }
+
     @Test
-    public void testGetAd() {
+    public void testSuccessfulGetAd() throws NoAdsException, InvalidTokenException, FileNotFoundException {
+        String userToken = "validTokenUser";
+        long movieId = 1;
+        Ad ad = mock(Ad.class);
+        Clip clip = mock(Clip.class);
+        when(ad.getClip()).thenReturn(clip);
+        when(clip.getId()).thenReturn((long) 1);
+        ArrayList<Ad> ads = new ArrayList<Ad>();
+        ads.add(ad);
+        when(adDao.getAllAds()).thenReturn(ads);
+        assertEquals(clipStorage.getClipDataByClipId((long) 1), movieManager.getAd(userToken, movieId));
+    }
+
+    @Test(expected = NoAdsException.class)
+    public void testUnsuccessfulGetAdFileNotFound() throws NoAdsException, InvalidTokenException {
+        String userToken = "validTokenUser";
+        long movieId = 1;
+        Ad ad = mock(Ad.class);
+        Clip clip = mock(Clip.class);
+        when(ad.getClip()).thenReturn(clip);
+        when(clip.getId()).thenReturn((long) 2);
+        ArrayList<Ad> ads = new ArrayList<Ad>();
+        ads.add(ad);
+        when(adDao.getAllAds()).thenReturn(ads);
+        movieManager.getAd(userToken, movieId);
     }
 }
