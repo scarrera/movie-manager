@@ -1,7 +1,6 @@
 package model;
 
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
-import edu.umflix.exceptions.ClipNotFoundException;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.model.Activity;
 import edu.umflix.model.ClipData;
@@ -10,12 +9,14 @@ import model.exceptions.NoAdsException;
 import model.exceptions.ValuesInActivityException;
 import model.exceptions.UserNotAllowedException;
 
+import javax.ejb.Remote;
 import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
  * External interface for accessing movie clips for the UMFlix project
  */
+@Remote
 public interface MovieManager {
 
     /**

@@ -45,7 +45,7 @@ public class MovieManagerImpl implements MovieManager {
      * {@link MovieManager#getMovie(String, Long)}
      */
     public List<Clip> getMovie(String userToken, Long movieId) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
-        if(userToken == null || movieId == null)
+        if (userToken == null || movieId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received getMovie invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
@@ -66,7 +66,7 @@ public class MovieManagerImpl implements MovieManager {
      * {@link MovieManager#getClipData(String, Long)}
      */
     public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException, FileNotFoundException {
-        if(userToken == null || clipId == null)
+        if (userToken == null || clipId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received getClipData invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
@@ -82,7 +82,7 @@ public class MovieManagerImpl implements MovieManager {
      * {@link MovieManager#sendActivity(String, edu.umflix.model.Activity)}
      */
     public void sendActivity(String userToken, Activity activity) throws InvalidTokenException, ValuesInActivityException, UserNotAllowedException {
-        if(userToken == null || activity == null)
+        if (userToken == null || activity == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received sendActivity invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
@@ -104,7 +104,7 @@ public class MovieManagerImpl implements MovieManager {
      * {@link MovieManager#getAd(String, Long)}
      */
     public ClipData getAd(String userToken, Long movieId) throws InvalidTokenException, NoAdsException {
-        if(userToken == null || movieId == null)
+        if (userToken == null || movieId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received sendActivity invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
