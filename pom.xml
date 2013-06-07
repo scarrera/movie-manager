@@ -7,6 +7,7 @@
     <groupId>movie-manager</groupId>
     <artifactId>movie-manager</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>ejb</packaging>
 
     <dependencies>
         <dependency>
@@ -63,6 +64,13 @@
                 <version>2.12</version>
                 <configuration>
                     <argLine>-XX:-UseSplitVerifier</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <configuration>
+                    <ejbVersion>3.0</ejbVersion>
                 </configuration>
             </plugin>
         </plugins>

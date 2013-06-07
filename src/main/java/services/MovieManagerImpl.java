@@ -1,10 +1,8 @@
 package services;
 
-import com.sun.istack.internal.NotNull;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.clipstorage.ClipStorage;
-import edu.umflix.exceptions.ClipNotFoundException;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
 import edu.umflix.model.*;
@@ -21,7 +19,6 @@ import org.apache.log4j.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +44,9 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getMovie(String, Long)}
      */
-    public List<Clip> getMovie(@NotNull String userToken, @NotNull Long movieId) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
+    public List<Clip> getMovie(String userToken, Long movieId) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
+        if(userToken == null || movieId == null)
+            throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received getMovie invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
             logger.info("user token validation returned true");
@@ -66,7 +65,9 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getClipData(String, Long)}
      */
-    public ClipData getClipData(@NotNull String userToken, @NotNull Long clipId) throws InvalidTokenException, FileNotFoundException {
+    public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException, FileNotFoundException {
+        if(userToken == null || clipId == null)
+            throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received getClipData invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
             logger.info("user token validation returned true");
@@ -80,7 +81,9 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#sendActivity(String, edu.umflix.model.Activity)}
      */
-    public void sendActivity(@NotNull String userToken, @NotNull Activity activity) throws InvalidTokenException, ValuesInActivityException, UserNotAllowedException {
+    public void sendActivity(String userToken, Activity activity) throws InvalidTokenException, ValuesInActivityException, UserNotAllowedException {
+        if(userToken == null || activity == null)
+            throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received sendActivity invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
             logger.info("user token validation returned true; proceeding to validate received activity");
@@ -100,7 +103,9 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getAd(String, Long)}
      */
-    public ClipData getAd(@NotNull String userToken, @NotNull Long movieId) throws InvalidTokenException, NoAdsException {
+    public ClipData getAd(String userToken, Long movieId) throws InvalidTokenException, NoAdsException {
+        if(userToken == null || movieId == null)
+            throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received sendActivity invocation; proceeding to validate user token");
         if (validateUser(userToken)) {
             logger.info("user token validation returned true; proceeding to select random Ad");
