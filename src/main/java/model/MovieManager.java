@@ -16,7 +16,6 @@ import java.util.List;
 /**
  * External interface for accessing movie clips for the UMFlix project
  */
-@Remote
 public interface MovieManager {
 
     /**
