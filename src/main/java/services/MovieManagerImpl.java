@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @see MovieManager
  */
-@Stateless
+@Stateless(name = "MovieManager")
 public class MovieManagerImpl implements MovieManager {
 
     static Logger logger = Logger.getLogger(MovieManager.class);
