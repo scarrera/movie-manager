@@ -2,6 +2,7 @@ package services;
 
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
+import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
 import edu.umflix.clipstorage.ClipStorage;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
@@ -160,6 +161,8 @@ public class MovieManagerImpl implements MovieManager {
                 throw new UserNotAllowedException("The user set in the activity is not allowed to interact with the movie set in the activity");
         } catch (MovieNotFoundException e) {
             throw new ValuesInActivityException("The movie set in the activity does not exist");
+        } catch (InvalidUserException e) {
+            throw new ValuesInActivityException("The user set in the activity is not valid");
         }
     }
 

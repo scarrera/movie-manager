@@ -4,6 +4,7 @@ import java.lang.IllegalArgumentException;
 
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
+import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
 import edu.umflix.clipstorage.ClipStorage;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
@@ -216,7 +217,7 @@ public class MovieManagerImplTest {
 
     //sendActivity tests
     @Test
-    public void testSuccessfulUserSendActivity() throws UserNotAllowedException, InvalidTokenException, ValuesInActivityException {
+    public void testSuccessfulUserSendActivity() throws UserNotAllowedException, InvalidTokenException, ValuesInActivityException, InvalidUserException {
         String userToken = "validTokenUser";
         Activity activity = mock(Activity.class);
 
@@ -233,7 +234,7 @@ public class MovieManagerImplTest {
     }
 
     @Test
-    public void testSuccessfulAdminSendActivity() throws UserNotAllowedException, InvalidTokenException, ValuesInActivityException {
+    public void testSuccessfulAdminSendActivity() throws UserNotAllowedException, InvalidTokenException, ValuesInActivityException, InvalidUserException {
         String userToken = "validTokenAdmin";
         Activity activity = mock(Activity.class);
 
