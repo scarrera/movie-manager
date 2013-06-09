@@ -225,7 +225,7 @@ public class MovieManagerImplTest {
 
         when(user.getEmail()).thenReturn("user@mail.com");
         when(activity.getUser()).thenReturn(user);
-        when(activity.getMovieId()).thenReturn("1");
+        when(activity.getMovieId()).thenReturn((long) 1);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);
@@ -241,7 +241,7 @@ public class MovieManagerImplTest {
         when(authenticationHandler.authenticate(admin)).thenReturn("validTokenAdmin");
         when(admin.getEmail()).thenReturn("admin@mail.com");
         when(activity.getUser()).thenReturn(admin);
-        when(activity.getMovieId()).thenReturn("2");
+        when(activity.getMovieId()).thenReturn((long) 2);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);
@@ -256,7 +256,7 @@ public class MovieManagerImplTest {
         User user = mock(User.class);
         when(user.getEmail()).thenReturn("anotherUser@mail.com");
         when(activity.getUser()).thenReturn(user);
-        when(activity.getMovieId()).thenReturn("1");
+        when(activity.getMovieId()).thenReturn((long) 1);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);
@@ -267,6 +267,7 @@ public class MovieManagerImplTest {
     public void testUnsuccessfulSendActivityMovieNotSet() throws UserNotAllowedException, InvalidTokenException, ValuesInActivityException {
         String userToken = "validTokenUser";
         Activity activity = mock(Activity.class);
+        when(activity.getMovieId()).thenReturn(null);
 
         User user = mock(User.class);
         when(user.getEmail()).thenReturn("user@mail.com");
@@ -296,7 +297,7 @@ public class MovieManagerImplTest {
         User user = mock(User.class);
         when(user.getEmail()).thenReturn("user@mail.com");
         when(activity.getUser()).thenReturn(user);
-        when(activity.getMovieId()).thenReturn("2");
+        when(activity.getMovieId()).thenReturn((long) 2);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);
@@ -311,7 +312,7 @@ public class MovieManagerImplTest {
         User user = mock(User.class);
         when(user.getEmail()).thenReturn("user@mail.com");
         when(activity.getUser()).thenReturn(user);
-        when(activity.getMovieId()).thenReturn("1");
+        when(activity.getMovieId()).thenReturn((long) 1);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);
@@ -326,7 +327,7 @@ public class MovieManagerImplTest {
         User user = mock(User.class);
         when(user.getEmail()).thenReturn("user@mail.com");
         when(activity.getUser()).thenReturn(user);
-        when(activity.getMovieId()).thenReturn("1");
+        when(activity.getMovieId()).thenReturn((long) 1);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);
@@ -341,7 +342,7 @@ public class MovieManagerImplTest {
         User user = mock(User.class);
         when(user.getEmail()).thenReturn("user@mail.com");
         when(activity.getUser()).thenReturn(user);
-        when(activity.getMovieId()).thenReturn("3");
+        when(activity.getMovieId()).thenReturn((long) 3);
         when(activity.getPosition()).thenReturn(1);
         when(activity.getTime()).thenReturn((long) 140);
         movieManager.sendActivity(userToken, activity);

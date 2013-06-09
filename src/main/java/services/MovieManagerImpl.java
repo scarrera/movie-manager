@@ -145,18 +145,18 @@ public class MovieManagerImpl implements MovieManager {
      * @see Activity
      */
     private void validateActivity(Activity activity) throws ValuesInActivityException, UserNotAllowedException {
-        String movieId = activity.getMovieId();
+        Long movieId = activity.getMovieId();
         int position = activity.getPosition();
         long time = activity.getTime();
         User user = activity.getUser();
 
-        if (movieId == "" || movieId == null)
+        if (movieId == null)
             throw new ValuesInActivityException("Movie id is not set");
         if (user == null)
             throw new ValuesInActivityException("User is not set");
 
         try {
-            if (!userAllowedMovie(authenticationHandler.authenticate(user), movieDao.getMovieById(Long.parseLong(movieId))))
+            if (!userAllowedMovie(authenticationHandler.authenticate(user), movieDao.getMovieById(movieId)))
                 throw new UserNotAllowedException("The user set in the activity is not allowed to interact with the movie set in the activity");
         } catch (MovieNotFoundException e) {
             throw new ValuesInActivityException("The movie set in the activity does not exist");
