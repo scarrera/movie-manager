@@ -19,12 +19,15 @@ import org.apache.log4j.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
 import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
  * @see MovieManager
  */
+@WebService
 @Stateless(name = "MovieManager")
 public class MovieManagerImpl implements MovieManager {
 
@@ -45,6 +48,7 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getMovie(String, Long)}
      */
+    @WebMethod
     public List<Clip> getMovie(String userToken, Long movieId) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
         if (userToken == null || movieId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
@@ -66,6 +70,7 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getClipData(String, Long)}
      */
+    @WebMethod
     public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException {
         if (userToken == null || clipId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
@@ -82,6 +87,7 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#sendActivity(String, edu.umflix.model.Activity)}
      */
+    @WebMethod
     public void sendActivity(String userToken, Activity activity) throws InvalidTokenException, ValuesInActivityException, UserNotAllowedException {
         if (userToken == null || activity == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
@@ -104,6 +110,7 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getAd(String, Long)}
      */
+    @WebMethod
     public ClipData getAd(String userToken, Long movieId) throws InvalidTokenException, NoAdsException {
         if (userToken == null || movieId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
