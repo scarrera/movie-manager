@@ -21,14 +21,16 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
  * @see MovieManager
  */
-@WebService
 @Stateless(name = "MovieManager")
+@WebService(portName = "MovieManagerPort",
+        serviceName = "MovieManagerService",
+        targetNamespace = "http://localhost/wsdl",
+        endpointInterface = "model.services.MovieManager")
 public class MovieManagerImpl implements MovieManager {
 
     static Logger logger = Logger.getLogger(MovieManager.class);
