@@ -37,10 +37,9 @@ public interface MovieManager {
      * @param clipId    the id of the token for which the user wishes to retrieve its ClipData object
      * @return ClipData object associated with given Clip id
      * @throws InvalidTokenException when received token is malformed
-     * @throws FileNotFoundException when clip id does not correspond with any ClipData in the system
      * @see ClipData
      */
-    public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException, FileNotFoundException;
+    public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException;
 
     /**
      * Reports a given activiy to the UMFlix system

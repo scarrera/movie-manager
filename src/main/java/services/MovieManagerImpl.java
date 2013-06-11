@@ -3,7 +3,6 @@ package services;
 import edu.umflix.authenticationhandler.AuthenticationHandler;
 import edu.umflix.authenticationhandler.exceptions.InvalidTokenException;
 import edu.umflix.authenticationhandler.exceptions.InvalidUserException;
-import edu.umflix.clipstorage.ClipStorage;
 import edu.umflix.exceptions.MovieNotFoundException;
 import edu.umflix.exceptions.RoleNotFoundException;
 import edu.umflix.model.*;
@@ -11,6 +10,7 @@ import edu.umflix.persistence.ActivityDao;
 import edu.umflix.persistence.AdDao;
 import edu.umflix.persistence.MovieDao;
 import edu.umflix.persistence.RoleDao;
+import edu.umflix.clipstorage.ClipStorage;
 import model.MovieManager;
 import model.exceptions.NoAdsException;
 import model.exceptions.ValuesInActivityException;
@@ -66,7 +66,7 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getClipData(String, Long)}
      */
-    public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException, FileNotFoundException {
+    public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException {
         if (userToken == null || clipId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
         logger.info("received getClipData invocation; proceeding to validate user token");
@@ -112,14 +112,9 @@ public class MovieManagerImpl implements MovieManager {
             logger.info("user token validation returned true; proceeding to select random Ad");
             Ad ad = getRandomAd();
             logger.info("random Ad selected; proceeding to retrieve its associated ClipData");
-            try {
-                ClipData clipData = clipStorage.getClipDataByClipId(ad.getClip().getId());
-                logger.info("Clip data for the selected Ad found, proceeding to return this object");
-                return clipData;
-            } catch (FileNotFoundException e) {
-                logger.info("An Ad was selected, yet its clipData could not be found");
-                throw new NoAdsException();
-            }
+            ClipData clipData = clipStorage.getClipDataByClipId(ad.getClip().getId());
+            logger.info("Clip data for the selected Ad found, proceeding to return this object");
+            return clipData;
         } else {
             logger.info("user token validation returned false");
             throw new IllegalArgumentException("User token has expired");
