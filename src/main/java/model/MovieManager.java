@@ -9,12 +9,13 @@ import model.exceptions.NoAdsException;
 import model.exceptions.ValuesInActivityException;
 import model.exceptions.UserNotAllowedException;
 
-import java.io.FileNotFoundException;
+import javax.jws.WebService;
 import java.util.List;
 
 /**
  * External interface for accessing movie clips for the UMFlix project
  */
+@WebService(targetNamespace = "http://localhost/wsdl")
 public interface MovieManager {
 
     /**
