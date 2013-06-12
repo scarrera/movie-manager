@@ -27,10 +27,9 @@ import java.util.List;
  * @see MovieManager
  */
 @Stateless(name = "MovieManager")
-@WebService(portName = "MovieManagerPort",
-        serviceName = "MovieManagerService",
-        targetNamespace = "http://localhost/wsdl",
-        endpointInterface = "model.services.MovieManager")
+@WebService(portName = "MovieManagerServicePort",
+        serviceName = "MovieManagerServiceWebService",
+        targetNamespace = "http://um.org/wsdl")
 public class MovieManagerImpl implements MovieManager {
 
     static Logger logger = Logger.getLogger(MovieManager.class);
