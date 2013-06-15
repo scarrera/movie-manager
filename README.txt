@@ -1,4 +1,4 @@
-Installation instruction:
+Installation instructions:
 
 1) Make sure these projects are deployed in app server:
 	- Umflix persistence
