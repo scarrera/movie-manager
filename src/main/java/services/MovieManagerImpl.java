@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.jws.WebMethod;
 import javax.jws.WebService;
 import java.util.List;
 
@@ -33,23 +32,22 @@ import java.util.List;
 public class MovieManagerImpl implements MovieManager {
 
     static Logger logger = Logger.getLogger(MovieManager.class);
-    @EJB(beanName = "movieDao")
-    MovieDao movieDao;
+    @EJB(beanName = "MovieDao")
+    private MovieDao movieDao;
     @EJB(beanName = "RoleDao")
-    RoleDao roleDao;
+    private RoleDao roleDao;
     @EJB(beanName = "AuthenticationHandler")
-    AuthenticationHandler authenticationHandler;
+    private AuthenticationHandler authenticationHandler;
     @EJB(beanName = "ActivityDao")
-    ActivityDao activityDao;
+    private ActivityDao activityDao;
     @EJB(beanName = "ClipStorage")
-    ClipStorage clipStorage;
+    private ClipStorage clipStorage;
     @EJB(beanName = "AdDao")
-    AdDao adDao;
+    private AdDao adDao;
 
     /**
      * {@link MovieManager#getMovie(String, Long)}
      */
-    @WebMethod
     public List<Clip> getMovie(String userToken, Long movieId) throws InvalidTokenException, MovieNotFoundException, UserNotAllowedException {
         if (userToken == null || movieId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
@@ -71,7 +69,6 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getClipData(String, Long)}
      */
-    @WebMethod
     public ClipData getClipData(String userToken, Long clipId) throws InvalidTokenException {
         if (userToken == null || clipId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
@@ -88,7 +85,6 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#sendActivity(String, edu.umflix.model.Activity)}
      */
-    @WebMethod
     public void sendActivity(String userToken, Activity activity) throws InvalidTokenException, ValuesInActivityException, UserNotAllowedException {
         if (userToken == null || activity == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
@@ -111,7 +107,6 @@ public class MovieManagerImpl implements MovieManager {
     /**
      * {@link MovieManager#getAd(String, Long)}
      */
-    @WebMethod
     public ClipData getAd(String userToken, Long movieId) throws InvalidTokenException, NoAdsException {
         if (userToken == null || movieId == null)
             throw new IllegalArgumentException("Null values are not accepted as inputs");
