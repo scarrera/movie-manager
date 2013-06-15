@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.jws.WebMethod;
 import javax.jws.WebService;
 import java.util.List;
 
@@ -212,6 +213,7 @@ public class MovieManagerImpl implements MovieManager {
      * @param movieDao to set
      * @see MovieDao
      */
+    @WebMethod(exclude = true)
     public void setMovieDao(MovieDao movieDao) {
         this.movieDao = movieDao;
     }
@@ -222,6 +224,7 @@ public class MovieManagerImpl implements MovieManager {
      * @param roleDao to set
      * @see RoleDao
      */
+    @WebMethod(exclude = true)
     public void setRoleDao(RoleDao roleDao) {
         this.roleDao = roleDao;
     }
@@ -232,6 +235,7 @@ public class MovieManagerImpl implements MovieManager {
      * @param authenticationHandler to set
      * @see AuthenticationHandler
      */
+    @WebMethod(exclude = true)
     public void setAuthenticationHandler(AuthenticationHandler authenticationHandler) {
         this.authenticationHandler = authenticationHandler;
     }
@@ -242,6 +246,7 @@ public class MovieManagerImpl implements MovieManager {
      * @param activityDao to set
      * @see ActivityDao
      */
+    @WebMethod(exclude = true)
     public void setActivityDao(ActivityDao activityDao) {
         this.activityDao = activityDao;
     }
@@ -252,6 +257,7 @@ public class MovieManagerImpl implements MovieManager {
      * @param clipStorage to set
      * @see ClipStorage
      */
+    @WebMethod(exclude = true)
     public void setClipStorage(ClipStorage clipStorage) {
         this.clipStorage = clipStorage;
     }
@@ -262,6 +268,7 @@ public class MovieManagerImpl implements MovieManager {
      * @param adDao to set
      * @see AdDao
      */
+    @WebMethod(exclude = true)
     public void setAdDao(AdDao adDao) {
         this.adDao = adDao;
     }
